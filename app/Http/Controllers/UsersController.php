@@ -14,7 +14,7 @@ class UsersController extends Controller
     {
         //validacion para que no se pueda acceder  desde el navegador
         if ($request->isJson()) {
-            $usuario = User::all();
+            $usuario = User::all('first_name','last_name','email','password');
             return response()->json($usuario, 200);
         }
         return response()->json(['error' => "Request should have header 'Accept' with the value : 'Application/json'"], 403);
@@ -25,11 +25,11 @@ class UsersController extends Controller
         if ($request->isJson()) {
             $data = $request->json()->all();
             $user = User::create([
-                'name' => $data['name'],
-                'username' => $data['username'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
                 'email' => $data['email'],
                 'password' => $data['password'],
-                'api_token' => str_random(60)
+                'token' => str_random(60)
             ]);
             return response()->json([], 201);
         } return response()->json(['error' => "Request should have header 'Accept' with the value : ' Application/json'"], 403);
@@ -68,10 +68,11 @@ class UsersController extends Controller
         if ($request->isJson()) {
         try {
             $data = $request->json()->all();
-            $user = User::where('username', $data['username'])->where('password',$data['password'])->first();
+            $user = User::where('email', $data['email'])->where('password',$data['password'])->first();
 
             if ($user==true) {
-                return response()->json($user, 200);
+                $us=User::all('id','first_name','last_name','email','token');
+                return response()->json($us, 200);
             } else {
                 return response()->json(['error' => 'error in user or password'], 401);
             }
