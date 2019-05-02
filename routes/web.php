@@ -22,7 +22,7 @@ $router->get('/key', function () {
     return str_random(32);
 });
 
-//Rutas protegidas
+//Ruecurso protegidas
 $router->group(['middleware' => ['auth']], function ( ) use ($router) {
         $router->get('/Users', ['uses' => 'UsersController@Index']);
         $router->post('/Users', ['uses' => 'UsersController@create']);
